@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pradakshina Gallery · Sri Gangamma Temple</title>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@400;700&family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&family=Noto+Sans+Telugu:wght@400;700&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/css/style.css">
+<style>
+html,body{height:100%;overflow:hidden}
+#hall{position:fixed;inset:0;width:100%;height:100%;display:block;cursor:grab;touch-action:none}
+#hall.drag{cursor:grabbing}
+footer.site{display:none}
+.g-title{position:fixed;top:118px;left:0;right:0;text-align:center;z-index:5;pointer-events:none;transition:opacity .5s}
+.g-title h1{font-family:'Cinzel Decorative',serif;font-size:clamp(22px,3.6vw,40px);color:#fff0c8;text-shadow:0 3px 0 #5a2e05,0 0 30px rgba(255,170,0,.4)}
+.g-title p{font-family:'Cormorant Garamond',serif;font-style:italic;color:var(--gold-2);font-size:clamp(16px,2vw,21px);text-shadow:0 2px 8px #000}
+.dock{position:fixed;bottom:16px;left:50%;transform:translateX(-50%);z-index:5;display:flex;flex-direction:column;align-items:center;gap:10px;width:min(96vw,900px)}
+.thumbs{display:flex;gap:10px;overflow-x:auto;padding:6px 4px;max-width:100%;scrollbar-width:thin}
+.thumbs button{flex:none;width:54px;height:54px;border-radius:50%;border:2px solid rgba(245,192,74,.4);padding:0;cursor:pointer;background:#000 center 25%/cover;opacity:.75;transition:.25s}
+.thumbs button:hover{opacity:1;transform:translateY(-3px)}
+.thumbs button.cur{border-color:var(--gold-2);opacity:1;box-shadow:0 0 16px rgba(255,190,60,.8)}
+.bar{display:flex;align-items:center;gap:12px;padding:8px 12px;border-radius:50px;background:rgba(14,6,2,.8);border:1px solid var(--line);backdrop-filter:blur(6px)}
+.bar .count{font-family:'Cinzel Decorative',serif;color:var(--gold-2);min-width:130px;text-align:center;font-size:14px}
+.bar button.r{width:44px;height:44px;border-radius:50%;border:1px solid var(--gold);background:linear-gradient(180deg,#ffe9a8,#f5c04a);color:#3a1203;font-size:20px;cursor:pointer}
+.bar .zoom{padding:0 18px;height:44px;border-radius:30px;border:1px solid var(--gold);background:rgba(245,192,74,.15);color:var(--gold-2);cursor:pointer;font-family:inherit;font-weight:600}
+.g-help{color:var(--muted);font-size:12.5px;letter-spacing:.5px;text-align:center;text-shadow:0 1px 4px #000}
+
+.zg{display:none;gap:8px;align-items:center}
+.zg.on{display:flex}
+.zg button{min-width:44px;height:44px;padding:0 14px;border-radius:30px;border:1px solid var(--gold);background:rgba(245,192,74,.12);color:var(--gold-2);cursor:pointer;font-size:18px;font-family:inherit;font-weight:600}
+.zg .pct{min-width:54px;text-align:center;color:var(--muted);font-size:13px}
+</style>
+</head>
+<body data-no3d>
+<canvas id="hall"></canvas>
+<div class="g-title" id="gTitle"><h1>Pradakshina Mandapam</h1><p>Walk around Amma · అమ్మవారి దర్శనం</p></div>
+
+<div class="dock">
+  <div class="g-help" id="help">Drag or scroll to walk around · choose a darshan below or tap Amma to go closer</div>
+  <div class="thumbs" id="thumbs"></div>
+  <div class="bar">
+    <button class="r" id="prev" title="Previous darshan">‹</button>
+    <div class="count" id="cnt">Darshan 1 / 11</div>
+    <button class="r" id="next" title="Next darshan">›</button>
+    <button class="zoom" id="zoomBtn"><i class="ico" data-i="search"></i> Go closer</button>
+    <div class="zg" id="zg">
+      <button id="zout" title="Zoom out">−</button><span class="pct" id="zpct">100%</span><button id="zin" title="Zoom in">+</button>
+      <button id="zback" title="Step back">Step back</button>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script src="assets/js/gods-data.js"></script>
+<script src="assets/js/temple3d.js"></script>
+<script src="assets/js/common.js"></script>
+<script>
+const canvas = $('#hall');
+const renderer = T3.renderer(canvas);
+const scene = new THREE.Scene(); scene.background = new THREE.Color(0x070302); scene.fog = new THREE.Fog(0x070302, 9, 28);
+const cam = new THREE.PerspectiveCamera(62, 1, .1, 100);
+function size() { renderer.setSize(innerWidth, innerHeight, false); cam.aspect = innerWidth / innerHeight; cam.fov = cam.aspect < 1 ? 80 : 62; cam.updateProjectionMatrix(); }
+size(); addEventListener('resize', size);
+scene.add(new THREE.HemisphereLight(0xffc890, 0x1a0a02, .35));
+
+const N = GODS.length, R = 9.5, H = 6.5;
+// polished granite floor, white kolam, round carved wall, ceiling
+const floor = new THREE.Mesh(new THREE.CircleGeometry(R + 4, 64), new THREE.MeshStandardMaterial({ map: T3.floorTex([7, 7]), roughness: .15, metalness: .4 }));
+floor.rotation.x = -Math.PI / 2; scene.add(floor);
+const kolam = new THREE.Mesh(new THREE.CircleGeometry(3, 64), new THREE.MeshStandardMaterial({ map: T3.kolamTex(), transparent: true, roughness: .9 }));
+kolam.rotation.x = -Math.PI / 2; kolam.position.y = .02; scene.add(kolam);
+const wall = new THREE.Mesh(new THREE.CylinderGeometry(R + 3.2, R + 3.2, H + 1, 48, 1, true), new THREE.MeshStandardMaterial({ map: T3.stoneTex('#4e4236', [12, 2]), side: THREE.BackSide, roughness: .95 }));
+wall.position.y = (H + 1) / 2; scene.add(wall);
+const ceil = new THREE.Mesh(new THREE.CircleGeometry(R + 3.3, 48), new THREE.MeshStandardMaterial({ map: T3.stoneTex('#3a3028', [6, 6]), roughness: .95 }));
+ceil.rotation.x = Math.PI / 2; ceil.position.y = H + 1; scene.add(ceil);
+
+// central deepa sthambham
+const center = T3.standLamp(2.2); center.scale.setScalar(1.3); scene.add(center);
+const cLight = new THREE.PointLight(0xffa040, 1.6, 22, 2); cLight.position.y = 3.4; scene.add(cLight);
+
+// ring of pillars and shrines (sannidhis)
+const deities = [];
+for (let i = 0; i < N; i++) {
+  const a = i / N * Math.PI * 2;
+  const shrine = new THREE.Group();
+  shrine.position.set(Math.sin(a) * R, 0, -Math.cos(a) * R);
+  shrine.lookAt(0, 0, 0);
+  // granite shrine: plinth, side walls, lintel, dark sanctum interior
+  const g = (w, h, d, x, y, z, m = T3.M.granite) => { const b = new THREE.Mesh(new THREE.BoxGeometry(w, h, d), m); b.position.set(x, y, z); shrine.add(b); return b; };
+  g(3.6, .5, 2.2, 0, .25, -.3);
+  [-1, 1].forEach(s => g(.6, 4.6, 2, s * 1.55, 2.8, -.4));
+  g(3.8, .7, 2.2, 0, 5.4, -.4);
+  g(2.6, 4.6, .2, 0, 2.8, -1.3, T3.M.dark);
+  const roof = new THREE.Mesh(new THREE.CylinderGeometry(.7, .7, 3.4, 18), T3.M.stucco); roof.rotation.z = Math.PI / 2; roof.position.set(0, 6, -.4); shrine.add(roof);
+  for (let k = -1; k <= 1; k++) { const kal = new THREE.Mesh(new THREE.LatheGeometry([[0, 0], [.12, .02], [.18, .14], [.06, .3], [.03, .5], [0, .58]].map(p => new THREE.Vector2(p[0], p[1])), 12), T3.M.gold); kal.position.set(k * 1.1, 6.65, -.4); shrine.add(kal); }
+  // Amma inside, emerging from the darkness
+  const amma = T3.deity(GODS[i], 2.9, { lamps: false, depth: .45 }); amma.position.set(0, 2.55, -1.05); shrine.add(amma);
+  const plane = amma.children.find(c => c.userData.isDeity); plane.userData.index = i; deities.push(plane);
+  [-1, 1].forEach(s => { const l = T3.standLamp(.9); l.position.set(s * .95, .5, .35); shrine.add(l); });
+  if (i % 2 === 0) { const L = new THREE.PointLight(0xffb050, 1, 6, 2); L.position.set(0, 2.5, 1.6); shrine.add(L); }
+  // pillar between shrines
+  const pa = (i + .5) / N * Math.PI * 2, p = T3.pillar(H); p.position.set(Math.sin(pa) * (R - .4), 0, -Math.cos(pa) * (R - .4)); scene.add(p);
+  scene.add(shrine);
+}
+
+/* ===== Walking around (pradakshina) and zooming into Amma ===== */
+let yaw = 0, yawTarget = 0, focus = -1, focusAmt = 0, lastMove = performance.now();
+let zoom = 1, zoomT = 1, panX = 0, panY = 0, panXT = 0, panYT = 0;
+const step = Math.PI * 2 / N;
+const idx = () => ((Math.round(yawTarget / step) % N) + N) % N;
+const thumbs = $('#thumbs');
+GODS.forEach((src, i) => { const b = document.createElement('button'); b.style.backgroundImage = `url(assets/god${i + 1}.jpg)`; b.title = `Darshan ${i + 1}`; b.onclick = () => goTo(i); thumbs.appendChild(b); });
+
+function setFocus(i) {
+  focus = i; zoomT = 1; panXT = panYT = 0;
+  $('#zg').classList.toggle('on', i >= 0); $('#zoomBtn').style.display = i >= 0 ? 'none' : '';
+  $('#help').textContent = i >= 0 ? 'Scroll or use + / − to zoom into Amma · drag to look around the image'
+                                  : 'Drag or scroll to walk around · choose a darshan below or tap Amma to go closer';
+}
+function turnTo(i) { const cur = idx(); let d = ((i - cur) % N + N) % N; if (d > N / 2) d -= N; yawTarget = Math.round(yawTarget / step) * step + d * step; }
+function goTo(i) { turnTo(i); setFocus(i); lastMove = performance.now(); try { bell(520, .25); } catch (e) {} }
+function go(d) { yawTarget = Math.round(yawTarget / step) * step + d * step; lastMove = performance.now(); setFocus(-1); }
+function zoomBy(k) { if (focus < 0) return; zoomT = Math.min(7, Math.max(1, zoomT * k)); if (zoomT === 1) panXT = panYT = 0; }
+$('#prev').onclick = () => focus >= 0 ? goTo((idx() - 1 + N) % N) : go(-1);
+$('#next').onclick = () => focus >= 0 ? goTo((idx() + 1) % N) : go(1);
+$('#zoomBtn').onclick = () => goTo(idx());
+$('#zin').onclick = () => zoomBy(1.4); $('#zout').onclick = () => zoomBy(1 / 1.4);
+$('#zback').onclick = () => setFocus(-1);
+
+let wheelLock = 0;
+addEventListener('wheel', e => {
+  e.preventDefault();
+  if (focus >= 0) { zoomBy(e.deltaY < 0 ? 1.15 : 1 / 1.15); return; }
+  const now = performance.now(); if (now - wheelLock < 450) return; wheelLock = now; go(Math.sign(e.deltaY || e.deltaX));
+}, { passive: false });
+addEventListener('keydown', e => {
+  if (e.key === 'ArrowRight') $('#next').click(); if (e.key === 'ArrowLeft') $('#prev').click();
+  if (e.key === 'Enter') goTo(idx()); if (e.key === 'Escape') setFocus(-1);
+  if (e.key === '+' || e.key === '=') zoomBy(1.4); if (e.key === '-') zoomBy(1 / 1.4);
+});
+
+const pts = new Map(); let pinch = 0, moved = 0;
+canvas.addEventListener('pointerdown', e => { canvas.setPointerCapture(e.pointerId); pts.set(e.pointerId, [e.clientX, e.clientY]); moved = 0; canvas.classList.add('drag'); });
+canvas.addEventListener('pointermove', e => {
+  if (!pts.has(e.pointerId)) return;
+  const [px, py] = pts.get(e.pointerId), dx = e.clientX - px, dy = e.clientY - py;
+  pts.set(e.pointerId, [e.clientX, e.clientY]); moved += Math.abs(dx) + Math.abs(dy);
+  if (pts.size === 2) {
+    const [a, b] = [...pts.values()], d = Math.hypot(a[0] - b[0], a[1] - b[1]);
+    if (pinch) zoomBy(d / pinch); pinch = d; return;
+  }
+  if (focus >= 0) {                       // look around the image while zoomed
+    const lim = 1.3 * (1 - 1 / zoomT) + .05;
+    panXT = Math.max(-lim, Math.min(lim, panXT - dx * .006 / zoomT));
+    panYT = Math.max(-lim, Math.min(lim, panYT + dy * .006 / zoomT));
+  } else { yawTarget -= dx * .006; lastMove = performance.now(); }
+});
+const up = e => {
+  pts.delete(e.pointerId); pinch = 0; if (!pts.size) canvas.classList.remove('drag');
+  if (moved < 6) {
+    const ray = new THREE.Raycaster(), m = new THREE.Vector2(e.clientX / innerWidth * 2 - 1, -e.clientY / innerHeight * 2 + 1);
+    ray.setFromCamera(m, cam); const hit = ray.intersectObjects(deities)[0];
+    if (hit) { const i = hit.object.userData.index; if (focus === i) zoomBy(1.6); else goTo(i); }
+  } else if (focus < 0) yawTarget = Math.round(yawTarget / step) * step;
+};
+canvas.addEventListener('pointerup', up); canvas.addEventListener('pointercancel', up);
+
+const clock = new THREE.Clock();
+(function loop() {
+  const t = clock.getElapsedTime();
+  if (focus < 0 && performance.now() - lastMove > 7000) yawTarget += .0012;   // slow pradakshina when idle
+  yaw += (yawTarget - yaw) * .07;
+  focusAmt += ((focus >= 0 ? 1 : 0) - focusAmt) * .05;
+  zoom += (zoomT - zoom) * .1; panX += (panXT - panX) * .12; panY += (panYT - panY) * .12;
+  const r = focusAmt * (R - 4.6);
+  const sx = Math.sin(yaw), cz = -Math.cos(yaw), rx = Math.cos(yaw), rz = Math.sin(yaw);   // forward / right vectors
+  cam.position.set(sx * r, 2.4 + Math.sin(t * .8) * .02 * (1 / zoom), cz * r);
+  cam.lookAt(sx * R + rx * panX, 2.5 - (1 - focusAmt) * .1 + panY, cz * R + rz * panX);
+  const baseFov = cam.aspect < 1 ? 80 : 62;
+  cam.fov = baseFov / zoom; cam.updateProjectionMatrix();
+  const cur = idx();
+  $('#cnt').textContent = `Darshan ${cur + 1} / ${N}`;
+  $('#zpct').textContent = Math.round(zoomT * 100) + '%';
+  [...thumbs.children].forEach((b, i) => b.classList.toggle('cur', i === cur));
+  $('#gTitle').style.opacity = focusAmt > .3 ? 0 : 1;
+  cLight.intensity = 1.6 + Math.sin(t * 6) * .12;
+  T3.tick(t);
+  renderer.render(scene, cam);
+  requestAnimationFrame(loop);
+})();
+</script>
+</body>
+</html>

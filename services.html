@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Services · Sri Gangamma Temple, Kuppam</title>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@400;700&family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&family=Noto+Sans+Telugu:wght@400;700&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/css/style.css">
+<link rel="stylesheet" href="assets/css/pages.css">
+</head>
+<body>
+<div class="banner"><div class="inner"><span class="bell"><i class="ico" data-i="bell"></i></span><h1>Sevas &amp; Donation</h1><p>Homam · Abhishekam · Archana · e-Hundi</p><div class="crumb">Home › Services</div></div></div>
+<main>
+<section>
+  <div class="wrap">
+    <div class="eyebrow">Sevas &amp; Offerings</div><h2 class="title">Temple Services</h2><div class="divider"></div>
+    <div class="grid g4">
+      <div class="card svc tilt reveal"><div class="ic"><i class="ico" data-i="flame"></i></div><h3>Homam</h3><p class="muted">Ganapathi, Chandi &amp; Navagraha homam by temple priests.</p><div class="price">From ₹1,116</div><a href="#book" class="btn gold" data-seva="Homam">Book</a></div>
+      <div class="card svc tilt reveal"><div class="ic"><i class="ico" data-i="lotus"></i></div><h3>Abhishekam</h3><p class="muted">Sacred bath of Amma with milk, turmeric &amp; panchamrutham.</p><div class="price">₹516</div><a href="#book" class="btn gold" data-seva="Abhishekam">Book</a></div>
+      <div class="card svc tilt reveal"><div class="ic"><i class="ico" data-i="flower"></i></div><h3>Kumkuma Archana</h3><p class="muted">Archana with the 108 names of Amma in your gothram.</p><div class="price">₹116</div><a href="#book" class="btn gold" data-seva="Kumkuma Archana">Book</a></div>
+      <div class="card svc tilt reveal"><div class="ic"><i class="ico" data-i="dress"></i></div><h3>Saree Offering</h3><p class="muted">Offer a saree to Amma on special days.</p><div class="price">Any amount</div><a href="#book" class="btn gold" data-seva="Saree Offering">Book</a></div>
+    </div>
+  </div>
+</section>
+<section id="book">
+  <div class="wrap grid g2">
+    <div class="card reveal"><h3><i class="ico" data-i="flame"></i> Book a Homam / Seva</h3>
+      <form id="bookForm">
+        <div class="row"><div><label>Full name</label><input required placeholder="Devotee name"></div><div><label>Gothram</label><input placeholder="Gothram"></div></div>
+        <div class="row"><div><label>Phone</label><input required type="tel" placeholder="+91"></div><div><label>Date</label><input required type="date"></div></div>
+        <label>Seva</label><select id="sevaSel"><option>Homam</option><option>Abhishekam</option><option>Kumkuma Archana</option><option>Saree Offering</option><option>Annadanam</option></select>
+        <button class="btn gold" style="width:100%">Confirm Booking</button>
+      </form></div>
+    <div class="card reveal"><h3><i class="ico" data-i="heart"></i> Donation · Hundi e-Kanuka</h3>
+      <form id="donForm">
+        <label>Choose amount</label>
+        <div class="chips" id="chips"><button type="button">₹101</button><button type="button" class="sel">₹501</button><button type="button">₹1,116</button><button type="button">₹5,001</button><button type="button">Other</button></div>
+        <div class="row"><div><label>Name</label><input required placeholder="Donor name"></div><div><label>Phone</label><input required type="tel" placeholder="+91"></div></div>
+        <label>Purpose</label><select><option>Annadanam (free meals)</option><option>Temple development</option><option>Ganga Jatara festival</option><option>Gosamrakshana</option><option>General donation</option></select>
+        <button class="btn gold" style="width:100%">Donate with Devotion</button>
+      </form></div>
+  </div>
+</section>
+</main>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script src="assets/js/gods-data.js"></script>
+<script src="assets/js/temple3d.js"></script>
+<script src="assets/js/common.js"></script>
+<script>
+$$('[data-seva]').forEach(b => b.addEventListener('click', () => $('#sevaSel').value = b.dataset.seva));
+$('#chips').onclick = e => { if (e.target.tagName !== 'BUTTON') return; [...e.currentTarget.children].forEach(b => b.classList.remove('sel')); e.target.classList.add('sel'); };
+$('#bookForm').onsubmit = e => { e.preventDefault(); bell(); petals(20); toast('Seva request received. The temple office will call you to confirm.'); e.target.reset(); };
+$('#donForm').onsubmit = e => { e.preventDefault(); bell(); petals(20); toast("Thank you! Amma's blessings be with you."); e.target.reset(); };
+</script>
+</body>
+</html>

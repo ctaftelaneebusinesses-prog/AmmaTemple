@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Contact · Sri Gangamma Temple, Kuppam</title>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@400;700&family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&family=Noto+Sans+Telugu:wght@400;700&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/css/style.css">
+<link rel="stylesheet" href="assets/css/pages.css">
+</head>
+<body>
+<div class="banner"><div class="inner"><span class="bell"><i class="ico" data-i="bell"></i></span><h1>Contact Us</h1><p>Come, take Amma's darshan</p><div class="crumb">Home › Contact</div></div></div>
+<main>
+<section>
+  <div class="wrap grid g2">
+    <div class="card reveal">
+      <div class="info-line"><div class="ic"><i class="ico" data-i="pin"></i></div><div><b>Address</b><br>Sri Gangamma Ammavari Temple,<br>Kuppam, Chittoor District,<br>Andhra Pradesh – 517425</div></div>
+      <div class="info-line"><div class="ic"><i class="ico" data-i="phone"></i></div><div><b>Temple Office</b><br>+91 XXXXX XXXXX</div></div>
+      <div class="info-line"><div class="ic"><i class="ico" data-i="mail"></i></div><div><b>Email</b><br>info@kuppamgangamma.org</div></div>
+      <div class="info-line"><div class="ic"><i class="ico" data-i="train"></i></div><div><b>How to reach</b><br>Kuppam Railway Station · about 110 km from Bengaluru</div></div>
+      <form id="msgForm"><div class="row"><input required placeholder="Your name"><input required type="tel" placeholder="Phone"></div><textarea rows="3" placeholder="Your message"></textarea><button class="btn gold" style="width:100%">Send Message</button></form>
+    </div>
+    <div class="map reveal"><iframe loading="lazy" title="Kuppam map" src="https://maps.google.com/maps?q=Gangamma%20Temple%20Kuppam&t=&z=14&ie=UTF8&iwloc=&output=embed"></iframe></div>
+  </div>
+</section>
+</main>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script src="assets/js/gods-data.js"></script>
+<script src="assets/js/temple3d.js"></script>
+<script src="assets/js/common.js"></script>
+<script>$('#msgForm').onsubmit = e => { e.preventDefault(); bell(); toast('Message sent. We will get back to you soon.'); e.target.reset(); };</script>
+</body>
+</html>

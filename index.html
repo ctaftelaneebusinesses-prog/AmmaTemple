@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sri Gangamma Temple, Kuppam</title>
+<meta name="description" content="Sri Gangamma Ammavari Temple, Kuppam – walk into the temple and take darshan of Amma.">
+<link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@400;700&family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&family=Noto+Sans+Telugu:wght@400;700&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/css/style.css">
+<style>
+#temple{position:fixed;inset:0;width:100%;height:100%;z-index:0;display:block}
+#walk{height:800vh;position:relative;z-index:2}
+.cap{position:fixed;left:0;right:0;z-index:5;text-align:center;pointer-events:none;opacity:0;transition:opacity .6s,transform .6s;padding:0 16px}
+.cap.on{opacity:1}
+#capTitle{top:5vh}
+#capTitle .om{font-size:clamp(28px,3.5vw,44px);color:var(--gold-2);text-shadow:0 0 30px #ff9d00}
+#capTitle h1{font-family:'Cinzel Decorative',serif;font-size:clamp(24px,4vw,52px);color:#fff4d1;
+  text-shadow:0 4px 0 #8a4b06,0 8px 30px rgba(0,0,0,.9),0 0 40px rgba(255,170,0,.6)}
+#capTitle .sub{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:clamp(18px,2.2vw,26px);color:var(--gold-2);text-shadow:0 2px 10px #000}
+#capTitle .te{color:var(--gold-2);font-size:clamp(18px,2vw,24px);text-shadow:0 2px 10px #000}
+#beginBtn{pointer-events:auto;position:fixed;left:50%;bottom:13vh;transform:translateX(-50%);font-family:'Cinzel Decorative',serif;font-size:clamp(13px,1.5vw,17px);letter-spacing:2px;
+  padding:16px 38px;border-radius:60px;border:2px solid var(--gold-2);color:#3a1203;cursor:pointer;
+  background:linear-gradient(180deg,#ffe9a8,#f5c04a 50%,#c98a1d);box-shadow:0 0 0 6px rgba(245,192,74,.2),0 10px 40px rgba(255,160,0,.6);animation:float 3s ease-in-out infinite}
+.cap.mid{top:auto;bottom:13vh;font-family:'Cormorant Garamond',serif;font-style:italic;font-size:clamp(22px,3vw,38px);color:#fff1c8;text-shadow:0 2px 14px #000,0 0 30px rgba(255,150,0,.6)}
+#capAmma{top:auto;bottom:6vh}
+#capAmma .te{font-size:clamp(24px,3.6vw,46px);color:#ffe7a0;text-shadow:0 0 24px #ff8c00,0 3px 10px #000}
+.scrollhint{position:fixed;bottom:3vh;left:50%;transform:translateX(-50%);z-index:5;color:var(--gold-2);font-size:13px;letter-spacing:3px;text-align:center;transition:opacity .5s;pointer-events:none}
+.scrollhint .m{width:24px;height:38px;border:2px solid var(--gold-2);border-radius:14px;margin:6px auto 0;position:relative}
+.scrollhint .m::after{content:"";position:absolute;left:50%;top:6px;width:4px;height:8px;margin-left:-2px;border-radius:2px;background:var(--gold-2);animation:wheel 1.6s infinite}
+@keyframes wheel{to{transform:translateY(12px);opacity:0}}
+#skip{position:fixed;right:18px;bottom:18px;z-index:6;background:rgba(0,0,0,.45);border:1px solid var(--line);color:var(--gold-2);padding:8px 16px;border-radius:30px;cursor:pointer;font-size:13px;transition:opacity .5s}
+#progress{position:fixed;left:0;top:0;height:3px;z-index:60;background:linear-gradient(90deg,#ff9d00,#ffe9a8);box-shadow:0 0 10px #ff9d00}
+body.walking header.site{transform:translateY(-130%)}
+body.walking .toran{opacity:0}
+.toran{transition:opacity .5s}
+
+/* home content over the sanctum */
+#home{padding-top:60px}
+main.wall{position:relative;z-index:3;background-color:#1d150f;background-size:512px 512px;
+  box-shadow:0 -40px 80px rgba(0,0,0,.8)}
+main.wall::before{content:"";position:absolute;inset:0;pointer-events:none;
+  background:radial-gradient(ellipse 40% 30% at 8% 20%,rgba(255,160,60,.18),transparent 70%),
+             radial-gradient(ellipse 40% 30% at 92% 55%,rgba(255,160,60,.16),transparent 70%),
+             linear-gradient(180deg,rgba(0,0,0,.35),rgba(0,0,0,.15) 30%,rgba(0,0,0,.45))}
+main.wall::after{content:"";position:absolute;left:0;right:0;top:-120px;height:120px;pointer-events:none;
+  background:linear-gradient(180deg,transparent,#1d150f)}
+.lintel{position:relative;height:46px;margin:-23px 0 0;z-index:4;
+  background:linear-gradient(180deg,#5a4a3a,#3a2e24);border-top:2px solid #b8791a;border-bottom:2px solid #b8791a;
+  box-shadow:0 6px 20px rgba(0,0,0,.7)}
+.lintel::before{content:"";position:absolute;inset:8px 0;background:radial-gradient(circle,#d9a441 3px,transparent 4px) 0 50%/28px 28px repeat-x}
+main.wall section{position:relative;z-index:1}
+.welcome{max-width:880px;margin:0 auto;text-align:center}
+.welcome .lead{font-size:24px}
+.stats{display:flex;gap:16px;justify-content:center;flex-wrap:wrap;margin-top:26px}
+.stat{min-width:150px;padding:14px 18px;border:1px solid var(--line);border-radius:6px;background:rgba(0,0,0,.35)}
+.stat b{display:block;font-family:'Cinzel Decorative',serif;font-size:28px;color:var(--gold-2)}
+.stat span{font-size:13px;color:var(--muted)}
+
+/* Home page sections */
+.welcome2{display:grid;grid-template-columns:1.15fr .85fr;gap:5vw;align-items:center}
+@media(max-width:900px){.welcome2{grid-template-columns:1fr}}
+.welcome2 h2{font-family:'Cinzel Decorative',serif;font-size:clamp(28px,3.6vw,46px);line-height:1.15;color:#fff0c8;text-shadow:0 3px 0 #5a2e05;margin:6px 0 14px}
+.welcome2 .eyebrow{text-align:left}
+.welcome2 .btns{display:flex;gap:12px;flex-wrap:wrap;margin-top:24px}
+.archframe{position:relative;max-width:380px;margin:0 auto;padding:14px;border-radius:200px 200px 8px 8px;
+  background:linear-gradient(180deg,#6b5a48,#3a2e24);box-shadow:0 30px 60px rgba(0,0,0,.7),inset 0 2px 0 rgba(255,230,180,.25)}
+.archframe::before{content:"";position:absolute;inset:6px;border-radius:194px 194px 4px 4px;border:2px solid #b8791a;pointer-events:none}
+.archframe img{width:100%;aspect-ratio:3/4;object-fit:cover;object-position:center 20%;border-radius:186px 186px 4px 4px;box-shadow:inset 0 0 40px #000}
+.archframe .cap{position:absolute;left:50%;bottom:-18px;transform:translateX(-50%);white-space:nowrap;padding:8px 22px;border-radius:4px;
+  background:linear-gradient(180deg,#ffe9a8,#c98a1d);color:#3a1203;font-family:'Cinzel Decorative',serif;font-size:14px;box-shadow:0 8px 20px rgba(0,0,0,.6)}
+.band{background:linear-gradient(180deg,rgba(90,15,15,.85),rgba(50,8,8,.9));border-top:2px solid #b8791a;border-bottom:2px solid #b8791a;padding:34px 6vw}
+.band .row4{max-width:1200px;margin:0 auto;display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,220px),1fr));gap:20px}
+.band .it{display:flex;gap:14px;align-items:center}
+.band .it .ico{width:40px;height:40px;flex:none}
+.band b{display:block;font-family:'Cinzel Decorative',serif;color:var(--gold-2);font-size:15px}
+.band span{color:var(--cream);font-size:15px}
+.seva4{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,240px),1fr));gap:24px}
+.seva4 .card{text-align:center}
+.seva4 .ic{width:76px;height:76px;margin:0 auto 14px}
+.seva4 .price{color:var(--gold-2);font-weight:600;margin:6px 0 14px}
+.fest{display:grid;grid-template-columns:.9fr 1.1fr;gap:0;overflow:hidden;padding:0}
+@media(max-width:800px){.fest{grid-template-columns:1fr}}
+.fest .img{min-height:340px;background:url(assets/god5.jpg) center 25%/cover;box-shadow:inset -60px 0 60px -20px rgba(20,8,2,.95)}
+.fest .txt{padding:40px}
+.fest .tag{display:inline-block;padding:4px 14px;border-radius:3px;background:var(--gold);color:#3a1203;font-weight:600;font-size:13px;margin-bottom:12px}
+.peek{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,200px),1fr));gap:20px}
+.peek a{display:block;position:relative;aspect-ratio:3/4;border-radius:120px 120px 6px 6px;overflow:hidden;border:3px solid #6b5a48;outline:1px solid #b8791a;outline-offset:-8px;box-shadow:0 20px 40px rgba(0,0,0,.6)}
+.peek img{width:100%;height:100%;object-fit:cover;object-position:center 20%;transition:transform .8s}
+.peek a:hover img{transform:scale(1.08)}
+.center{text-align:center;margin-top:34px}
+.ess{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,280px),1fr));gap:24px}
+.ess .card h3{display:flex;gap:10px;align-items:center}
+.ess .card a{color:var(--gold-2);font-weight:600;display:inline-block;margin-top:10px}
+.timebar{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,200px),1fr));gap:16px;margin-top:10px}
+.timebar div{padding:16px;text-align:center;border-left:3px solid var(--gold);background:rgba(0,0,0,.35)}
+.timebar b{display:block;color:var(--gold-2)}
+</style>
+</head>
+<body data-no3d class="walking">
+<canvas id="temple"></canvas>
+<div id="progress"></div>
+
+<div class="cap on" id="capTitle">
+  <div class="om">ॐ</div>
+  <h1>Sri Gangamma Temple</h1>
+  <div class="sub">Kuppam · Chittoor · Andhra Pradesh</div>
+  <div class="te">శ్రీ గంగమ్మ అమ్మవారి దేవాలయం</div>
+  <button id="beginBtn"><i class="ico" data-i="bell"></i> Begin Darshan</button>
+</div>
+<div class="cap mid" id="cap1">Walk towards Amma's Rajagopuram…</div>
+<div class="cap mid" id="cap2">The sacred doors open for you…</div>
+<div class="cap mid" id="cap3">Through the pillared mandapam, lit by a hundred lamps…</div>
+<div class="cap mid" id="capAmma"><div class="te">ఓం శ్రీ గంగమ్మ తల్లియే నమః</div><div style="font-size:18px;margin-top:6px">Jai Gangamma Thalli · scroll to continue</div></div>
+<div class="scrollhint" id="hint">SCROLL TO WALK IN<div class="m"></div></div>
+<button id="skip">Skip to Home ›</button>
+
+<div id="walk"></div>
+
+<main class="wall" id="wallMain"><div class="lintel"></div>
+<section id="home">
+  <div class="wrap welcome2">
+    <div class="reveal">
+      <div class="eyebrow">Swagatham · స్వాగతం</div>
+      <h2>Sri Gangamma Ammavari Devasthanam, Kuppam</h2>
+      <p class="lead">Sri Gangamma is the Grama Devatha of Kuppam — the mother who protects her village from illness, drought and every misfortune.</p>
+      <p class="muted" style="margin-top:12px">For more than three centuries devotees from Andhra Pradesh, Karnataka and Tamil Nadu have come to seek her blessings. Every May the town celebrates her with the nine-day Ganga Jatara, one of the oldest festivals of the region.</p>
+      <div class="btns"><a href="services.html" class="btn gold">Book a Seva</a><a href="info.html" class="btn ghost">Plan Your Visit</a></div>
+    </div>
+    <div class="reveal"><div class="archframe"><img src="assets/god11.jpg" alt="Sri Gangamma Thalli"><div class="cap">Sri Gangamma Thalli</div></div></div>
+  </div>
+</section>
+
+<div class="band reveal"><div class="row4">
+  <div class="it"><i class="ico" data-i="clock"></i><div><b>Morning Darshan</b><span>6:00 AM – 12:30 PM</span></div></div>
+  <div class="it"><i class="ico" data-i="clock"></i><div><b>Evening Darshan</b><span>4:00 PM – 8:30 PM</span></div></div>
+  <div class="it"><i class="ico" data-i="lotus"></i><div><b>Abhishekam</b><span>6:30 AM daily</span></div></div>
+  <div class="it"><i class="ico" data-i="lamp"></i><div><b>Special Days</b><span>Tuesday · Friday · Sunday</span></div></div>
+</div></div>
+
+<section>
+  <div class="wrap">
+    <div class="eyebrow">Sevas &amp; Offerings</div><h2 class="title">Temple Services</h2><div class="divider"></div>
+    <div class="seva4">
+      <div class="card svc reveal"><div class="ic"><i class="ico" data-i="flame"></i></div><h3>Homam</h3><p class="muted">Ganapathi, Chandi &amp; Navagraha homam by temple priests.</p><div class="price">From ₹1,116</div><a href="services.html#book" class="btn gold">Book</a></div>
+      <div class="card svc reveal"><div class="ic"><i class="ico" data-i="lotus"></i></div><h3>Abhishekam</h3><p class="muted">Sacred bath of Amma with milk, turmeric &amp; panchamrutham.</p><div class="price">₹516</div><a href="services.html#book" class="btn gold">Book</a></div>
+      <div class="card svc reveal"><div class="ic"><i class="ico" data-i="flower"></i></div><h3>Kumkuma Archana</h3><p class="muted">Archana with the 108 names of Amma in your gothram.</p><div class="price">₹116</div><a href="services.html#book" class="btn gold">Book</a></div>
+      <div class="card svc reveal"><div class="ic"><i class="ico" data-i="heart"></i></div><h3>e-Hundi Donation</h3><p class="muted">Support annadanam, the Jatara and temple development.</p><div class="price">Any amount</div><a href="services.html#book" class="btn gold">Donate</a></div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap card fest reveal">
+    <div class="img"></div>
+    <div class="txt">
+      <span class="tag">Every year · May</span>
+      <h3 style="font-size:28px">Kuppam Ganga Jatara</h3>
+      <p class="muted">Amma's grand festival of about nine days. It begins with the traditional <i>chatimpu</i> announcement and continues with veshams, pongal offerings and processions through the town, drawing devotees from three states.</p>
+      <a href="news.html" class="btn gold" style="margin-top:20px">News &amp; Events</a>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <div class="eyebrow">Darshan</div><h2 class="title">Photo Gallery</h2><div class="divider"></div>
+    <div class="peek reveal">
+      <a href="gallery.html"><img src="assets/god1.jpg" alt="Amma darshan"></a>
+      <a href="gallery.html"><img src="assets/god3.jpg" alt="Amma darshan"></a>
+      <a href="gallery.html"><img src="assets/god8.jpg" alt="Amma darshan"></a>
+      <a href="gallery.html"><img src="assets/god4.jpg" alt="Amma darshan"></a>
+    </div>
+    <div class="center"><a href="gallery.html" class="btn ghost">Enter the Pradakshina Gallery</a></div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <div class="eyebrow">Before you come</div><h2 class="title">Visitor Essentials</h2><div class="divider"></div>
+    <div class="ess">
+      <div class="card reveal"><h3><i class="ico" data-i="dress"></i> Dress Code</h3><p class="muted">Saree, half-saree or churidar with dupatta for women; dhoti or kurta-pyjama for men.</p><a href="info.html">Full guidelines ›</a></div>
+      <div class="card reveal"><h3><i class="ico" data-i="scroll"></i> Do's &amp; Don'ts</h3><p class="muted">Remove footwear, keep silence in the queue, no photography inside the sanctum.</p><a href="info.html">Read more ›</a></div>
+      <div class="card reveal"><h3><i class="ico" data-i="pin"></i> Reach the Temple</h3><p class="muted">Kuppam, Chittoor District, Andhra Pradesh — about 110 km from Bengaluru.</p><a href="contact.html">Map &amp; contact ›</a></div>
+    </div>
+  </div>
+</section>
+</main>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script src="assets/js/gods-data.js"></script>
+<script src="assets/js/temple3d.js"></script>
+<script src="assets/js/common.js"></script>
+<script>
+/* ===== The temple, built in 3D ===== */
+const renderer = T3.renderer($('#temple'));
+renderer.shadowMap.enabled = true; renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+const scene = new THREE.Scene();
+scene.background = T3.sky();
+scene.fog = new THREE.Fog(0x2a1620, 50, 190);
+const cam = new THREE.PerspectiveCamera(56, 1, .1, 400);
+function size() { renderer.setSize(innerWidth, innerHeight, false); cam.aspect = innerWidth / innerHeight; cam.updateProjectionMatrix(); }
+size(); addEventListener('resize', size);
+
+const hemi = new THREE.HemisphereLight(0x9aa0c8, 0x2a1a0e, .5); scene.add(hemi);
+const sun = new THREE.DirectionalLight(0xff9a50, 1.15); sun.position.set(-30, 22, 40);
+sun.castShadow = true; sun.shadow.mapSize.set(2048, 2048); sun.shadow.bias = -.0005;
+Object.assign(sun.shadow.camera, { left: -30, right: 30, top: 40, bottom: -6, near: 1, far: 140 });
+scene.add(sun);
+
+// stars
+{
+  const n = 700, p = new Float32Array(n * 3);
+  for (let i = 0; i < n; i++) { const a = Math.random() * Math.PI * 2, e = .3 + Math.random() * 1.2, r = 220; p[i * 3] = Math.cos(a) * Math.cos(e) * r; p[i * 3 + 1] = Math.sin(e) * r; p[i * 3 + 2] = Math.sin(a) * Math.cos(e) * r - 40; }
+  const g = new THREE.BufferGeometry(); g.setAttribute('position', new THREE.BufferAttribute(p, 3));
+  scene.add(new THREE.Points(g, new THREE.PointsMaterial({ color: 0xfff2d0, size: .7, fog: false })));
+}
+
+// granite courtyard
+const ground = new THREE.Mesh(new THREE.PlaneGeometry(220, 220), new THREE.MeshStandardMaterial({ map: T3.stoneTex('#5e5246', [55, 55]), roughness: .8 }));
+ground.rotation.x = -Math.PI / 2; ground.position.z = 60; ground.receiveShadow = true; scene.add(ground);
+const path = new THREE.Mesh(new THREE.PlaneGeometry(6, 70), new THREE.MeshStandardMaterial({ map: T3.floorTex([2, 22]), roughness: .3, metalness: .25 }));
+path.rotation.x = -Math.PI / 2; path.position.set(0, .02, 40); path.receiveShadow = true; scene.add(path);
+const kolam = new THREE.Mesh(new THREE.CircleGeometry(3.2, 64), new THREE.MeshStandardMaterial({ map: T3.kolamTex(), transparent: true, roughness: .9 }));
+kolam.rotation.x = -Math.PI / 2; kolam.position.set(0, .04, 13); scene.add(kolam);
+
+// Rajagopuram
+const gop = T3.gopuram(); scene.add(gop.group);
+const doorLight = new THREE.PointLight(0xff9a40, 1.6, 18, 2); doorLight.position.set(0, 5, 9); scene.add(doorLight);
+// dhwaja sthambham (golden flag mast) beside the path
+{
+  const g = new THREE.Group();
+  const base = new THREE.Mesh(new THREE.BoxGeometry(1.6, 1, 1.6), T3.M.granite); base.position.y = .5; base.castShadow = true;
+  const mast = new THREE.Mesh(new THREE.CylinderGeometry(.16, .26, 13, 16), T3.M.gold); mast.position.y = 7.5; mast.castShadow = true;
+  g.add(base, mast);
+  for (let i = 0; i < 12; i++) { const r = new THREE.Mesh(new THREE.TorusGeometry(.24 - i * .006, .035, 6, 20), T3.M.gold); r.rotation.x = Math.PI / 2; r.position.y = 2 + i; g.add(r); }
+  const top = new THREE.Mesh(new THREE.BoxGeometry(1.4, .12, .5), T3.M.gold); top.position.y = 14; g.add(top);
+  g.position.set(-5.5, 0, 20); scene.add(g);
+}
+// prakara walls (with the traditional muted kavi stripes) and lamps on the coping
+[-1, 1].forEach(s => {
+  const wall = new THREE.Mesh(new THREE.BoxGeometry(44, 6, 1.6), new THREE.MeshStandardMaterial({ map: T3.stoneTex('#6a5c4c', [11, 1.4]), roughness: .9 }));
+  wall.position.set(s * 30.5, 3, 0); wall.castShadow = wall.receiveShadow = true; scene.add(wall);
+  const cope = new THREE.Mesh(new THREE.BoxGeometry(44, .35, 2), T3.M.granite); cope.position.set(s * 30.5, 6.15, 0); scene.add(cope);
+  [[0x8a3a2a, 2.2], [0xd8cfc0, 2.75]].forEach(([c, y]) => { const b = new THREE.Mesh(new THREE.BoxGeometry(44, .45, 1.62), new THREE.MeshStandardMaterial({ color: c, roughness: .95 })); b.position.set(s * 30.5, y, 0); scene.add(b); });
+  for (let x = 9.5; x < 52; x += 2.4) { const l = T3.diya(); l.position.set(s * x, 6.33, .5); scene.add(l); }
+});
+// lamp posts along the path
+for (let z = 9; z < 46; z += 5) [-1, 1].forEach(s => { const l = T3.standLamp(1.5); l.position.set(s * 3.8, 0, z); scene.add(l); });
+// bells in the gateway
+[-1, 1].forEach(s => { const b = T3.bell(); b.position.set(s * 1.2, 8.1, gop.frontZ - .4); scene.add(b); });
+
+// inside: grand pillared mandapam leading to the sanctum
+const hall = T3.mandapam(-gop.depth / 2, -44, { step: 4, maxLights: 5 }); scene.add(hall);
+const sanctumWall = new THREE.Mesh(new THREE.BoxGeometry(18, 6.2, .8), T3.M.granite); sanctumWall.position.set(0, 3.1, -45.6); scene.add(sanctumWall);
+// garbhagriha doorway: granite jambs + lintel, dark interior
+[-1, 1].forEach(s => { const j = new THREE.Mesh(new THREE.BoxGeometry(.9, 5.6, 2.6), T3.M.granite); j.position.set(s * 2.9, 2.8, -44.7); scene.add(j); });
+const lint = new THREE.Mesh(new THREE.BoxGeometry(6.7, .8, 2.6), T3.M.granite); lint.position.set(0, 5.6, -44.7); scene.add(lint);
+const recess = new THREE.Mesh(new THREE.BoxGeometry(4.9, 5.2, .2), T3.M.dark); recess.position.set(0, 2.6, -45.15); scene.add(recess);
+const amma = T3.deity(GODS[0], 3.6); amma.position.set(0, 2.38, -44.6); scene.add(amma);
+const ammaGlow = T3.glow(9, .22); ammaGlow.position.set(0, 2.8, -44.9); scene.add(ammaGlow);
+[-1, 1].forEach(s => { const l = T3.standLamp(1.7); l.position.set(s * 4.2, 0, -42.5); scene.add(l); });
+
+$('#wallMain').style.backgroundImage = 'url(' + T3.stoneTex('#4a3e33').image.toDataURL() + ')';
+/* ===== Scroll = walking ===== */
+const far = innerWidth < innerHeight ? 1.5 : 1;
+const KEYS = [
+  { p: 0,   pos: [0, 2.4, 40 * far],   look: [0, 14, 0] },
+  { p: .2,  pos: [0, 2.6, 28],       look: [0, 9, 0] },
+  { p: .34, pos: [0, 2.6, 13.5],     look: [0, 4.6, 0] },
+  { p: .5,  pos: [0, 2.7, 5],        look: [0, 2.8, -12] },
+  { p: .85, pos: [0, 2.7, -34],      look: [0, 2.6, -48] },
+  { p: 1,   pos: [0, 2.5, -39.6],    look: [0, 2.45, -48] }
+];
+const ease = t => t < .5 ? 2 * t * t : 1 - Math.pow(-2 * t + 2, 2) / 2;
+const clamp = (v, a = 0, b = 1) => Math.min(b, Math.max(a, v));
+function camAt(p) {
+  let i = 0; while (i < KEYS.length - 2 && p > KEYS[i + 1].p) i++;
+  const A = KEYS[i], B = KEYS[i + 1], t = ease(clamp((p - A.p) / (B.p - A.p)));
+  const L = (a, b) => a.map((v, k) => v + (b[k] - v) * t);
+  return { pos: L(A.pos, B.pos), look: L(A.look, B.look) };
+}
+let mx = 0, my = 0, pSmooth = 0, rang = false;
+addEventListener('mousemove', e => { mx = e.clientX / innerWidth - .5; my = e.clientY / innerHeight - .5; });
+const walk = $('#walk');
+const progress = () => clamp(scrollY / (walk.offsetHeight - innerHeight));
+const show = (id, on) => $(id).classList.toggle('on', on);
+
+const clock = new THREE.Clock();
+(function loop() {
+  const t = clock.getElapsedTime(), p = progress();
+  pSmooth += (p - pSmooth) * .08;
+  const c = camAt(pSmooth);
+  // after the walk-in, step aside so Amma stays visible on the right while content scrolls on the left
+  const post = ease(clamp((scrollY - (walk.offsetHeight - innerHeight)) / (innerHeight * .8)));
+  cam.position.set(c.pos[0] + mx * .8, c.pos[1] - my * .4, c.pos[2]);
+  cam.lookAt(c.look[0] + mx * 3, c.look[1] - my * 1.5, c.look[2]);
+
+  const open = ease(clamp((pSmooth - .27) / .2)) * 1.95;
+  gop.doors.forEach(d => d.pivot.rotation.y = -d.s * open);
+  if (p > .27 && !rang) { rang = true; try { bell(392, .45); setTimeout(() => bell(523, .35), 700); } catch (e) {}  }
+  if (p < .2) rang = false;
+
+  const inside = clamp((pSmooth - .4) / .15);
+  scene.fog.near = 50 - inside * 42; scene.fog.far = 190 - inside * 150;
+  scene.fog.color.setRGB(.23 - inside * .18, .1 - inside * .08, .16 - inside * .15);
+  sun.intensity = 1.15 * (1 - inside); hemi.intensity = .32 - inside * .2;
+  T3.tick(t);
+  $('#temple').style.opacity = 1 - post * .85;
+  renderer.render(scene, cam);
+
+  show('#capTitle', p < .04); show('#cap1', p > .07 && p < .25); show('#cap2', p > .28 && p < .45);
+  show('#cap3', p > .52 && p < .8); show('#capAmma', p > .88 && p < .985);
+  $('#hint').style.opacity = p < .02 ? 1 : 0;
+  $('#skip').style.opacity = p < .95 ? 1 : 0;
+  $('#progress').style.width = (p * 100) + '%';
+  document.body.classList.toggle('walking', p < .97);
+  requestAnimationFrame(loop);
+})();
+
+$('#beginBtn').onclick = () => {
+  playMusic(); bell(520, .4);
+  scrollTo({ top: innerHeight * .9, behavior: 'smooth' });
+};
+$('#skip').onclick = () => { $('#home').scrollIntoView(); };
+{ const m = location.hash.match(/walk=([\d.]+)/); if (m) { scrollTo(0, m[1] * (walk.offsetHeight - innerHeight)); pSmooth = +m[1]; } }
+if (location.hash === '#home') setTimeout(() => $('#home').scrollIntoView(), 50);
+</script>
+</body>
+</html>
